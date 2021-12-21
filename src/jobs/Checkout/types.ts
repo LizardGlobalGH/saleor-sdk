@@ -14,6 +14,7 @@ export interface CreateCheckoutJobInput {
   selectedShippingAddressId?: string;
   billingAddress?: ICheckoutAddress;
   selectedBillingAddressId?: string;
+  note?: string;
 }
 
 export interface SetShippingAddressJobInput {
@@ -29,6 +30,12 @@ export interface SetBillingAddressJobInput {
   billingAddress: ICheckoutAddress;
   billingAsShipping?: boolean;
   selectedBillingAddressId?: string;
+}
+
+
+export interface updateNoteInput {
+  token: string;
+  note: string;
 }
 
 export interface SetBillingAddressWithEmailJobInput {

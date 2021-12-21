@@ -527,6 +527,7 @@ export interface CheckoutCreateInput {
   shippingAddress?: AddressInput | null;
   billingAddress?: AddressInput | null;
   languageCode?: LanguageCodeEnum | null;
+  note?: string
 }
 
 export interface CheckoutLineInput {

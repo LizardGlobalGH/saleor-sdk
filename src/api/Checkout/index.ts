@@ -124,13 +124,15 @@ export class SaleorCheckoutAPI extends ErrorListener {
 
   setShippingAddress = async (
     shippingAddress: IAddress,
-    email: string
+    email: string,
+    note?: string
   ): CheckoutResponse => {
     const checkoutId = this.saleorState.checkout?.id;
     const alteredLines = this.saleorState.checkout?.lines?.map(item => ({
       quantity: item!.quantity,
       variantId: item?.variant!.id,
     }));
+    const noteChanged = this.saleorState.checkout?.note !== note
 
     if (alteredLines && checkoutId) {
       const { data, dataError } = await this.jobsManager.run(
@@ -144,6 +146,17 @@ export class SaleorCheckoutAPI extends ErrorListener {
           shippingAddress,
         }
       );
+
+      if (noteChanged) {
+        await this.jobsManager.run(
+          "checkout",
+          "updateNote",
+          {
+            token: this.saleorState.checkout?.token,
+            note: note || ''
+          }
+        );
+      }
 
       return {
         data,
@@ -161,6 +174,7 @@ export class SaleorCheckoutAPI extends ErrorListener {
           lines: alteredLines,
           selectedShippingAddressId: shippingAddress.id,
           shippingAddress,
+          note
         }
       );
 

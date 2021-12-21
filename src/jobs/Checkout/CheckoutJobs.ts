@@ -16,6 +16,7 @@ import {
   SetShippingAddressJobInput,
   SetBillingAddressJobInput,
   SetBillingAddressWithEmailJobInput,
+  updateNoteInput,
 } from "./types";
 import { JobsHandler } from "../JobsHandler";
 
@@ -72,6 +73,7 @@ class CheckoutJobs extends JobsHandler<{}> {
     selectedShippingAddressId,
     billingAddress,
     selectedBillingAddressId,
+    note
   }: CreateCheckoutJobInput): PromiseCheckoutJobRunResponse => {
     const cleanedLines = lines.filter(line => line.quantity !== 0);
     const { data, error } = await this.apolloClientManager.createCheckout(
@@ -79,7 +81,8 @@ class CheckoutJobs extends JobsHandler<{}> {
       cleanedLines,
       channel,
       shippingAddress,
-      billingAddress
+      billingAddress,
+      note
     );
 
     if (error) {
@@ -99,6 +102,7 @@ class CheckoutJobs extends JobsHandler<{}> {
       ...data,
       selectedBillingAddressId,
       selectedShippingAddressId,
+      note
     });
     return {
       data,
@@ -141,13 +145,35 @@ class CheckoutJobs extends JobsHandler<{}> {
     return { data };
   };
 
+  updateNote = async ({
+    token,
+    note
+  }: updateNoteInput) => {
+
+    const { error } = await this.apolloClientManager.updateNote(
+      token,
+      note
+    );
+
+    if (error) {
+      return {
+        dataError: {
+          error,
+          type: DataErrorCheckoutTypes.UPDATE_NOTE,
+        },
+      };
+    }
+
+    return { };
+  };
+
   setBillingAddress = async ({
     checkoutId,
     billingAddress,
     billingAsShipping,
     selectedBillingAddressId,
   }: SetBillingAddressJobInput): PromiseCheckoutJobRunResponse => {
-    const checkout = LocalStorageHandler.getCheckout();
+    const checkout = LocalStorageHandler.getCheckout(); 
 
     const { data, error } = await this.apolloClientManager.setBillingAddress(
       billingAddress,

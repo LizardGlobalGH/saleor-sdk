@@ -23,6 +23,16 @@ export const updateCheckoutLineMutation = gql`
   }
 `;
 
+export const updateNoteMutation = gql`
+  mutation UpdateNoteMutation($token: UUID, $note: String!) {
+    checkoutNoteUpdate(token: $token, note: $note) {
+      checkout {
+        note
+      }
+    }
+  }
+`;
+
 export const createCheckoutMutation = gql`
   ${checkoutFragment}
   ${checkoutErrorFragment}

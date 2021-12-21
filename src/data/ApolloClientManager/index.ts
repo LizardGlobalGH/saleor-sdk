@@ -476,7 +476,8 @@ export class ApolloClientManager {
     lines: Array<{ variantId: string; quantity: number }>,
     channel: string,
     shippingAddress?: ICheckoutAddress,
-    billingAddress?: ICheckoutAddress
+    billingAddress?: ICheckoutAddress,
+    note?: string
   ) => {
     try {
       const variables = {
@@ -499,6 +500,7 @@ export class ApolloClientManager {
           channel,
           email,
           lines,
+          note: note || "",
           shippingAddress: shippingAddress && {
             city: shippingAddress.city,
             companyName: shippingAddress.companyName,
@@ -593,6 +595,24 @@ export class ApolloClientManager {
       }
     }
     return {};
+  };
+
+  updateNote = async (token: string, note: string) => {
+    try {
+      await this.client.mutate({
+        mutation: CheckoutMutations.updateNoteMutation,
+        variables: {
+          token,
+          note,
+        },
+      });
+      return {};
+
+    } catch (error) {
+      return {
+        error,
+      };
+    }
   };
 
   setShippingAddress = async (

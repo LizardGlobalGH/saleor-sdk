@@ -73,6 +73,7 @@ export enum DataErrorCheckoutTypes {
   "COMPLETE_CHECKOUT",
   "GET_CHECKOUT",
   "GET_PAYMENT_GATEWAYS",
+  "UPDATE_NOTE"
 }
 
 export interface CreatePaymentInput {
